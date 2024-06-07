@@ -60,9 +60,8 @@ Andrej [addresses this as well](https://www.youtube.com/watch?v=c3b-JASoPi0&t=16
 > 
 > So RLHF is nowhere near [true] RL -- it's silly. And the other thing is that imitation is super-silly. RLHF is a nice improvement, but it's still silly, and I think people need to look for better ways of training these models so that it's in the loop with itself and its own psychology, and I think there will probably be unlocks in that direction.
 
-In other words, there is a significant difference between RLHF and RL, and we should not confuse one for the other. As Andrej notes, part of the challenge has been to find clear objective functions that our system can optimize for, but SPAG has paved the way for this by leveraging language-based games, and we can follow in their footsteps.
+In other words, there is a significant difference between RLHF and RL, and we should not confuse one for the other. As Andrej notes, RLHF uses the "vibe" method to train a reward model that, given two possible generations, attempts to be able to predict which text is human-preferable, and trains off of that. The accuracy of the reward model is subjective, but in true reinforcement learning the reward model is absolute, and the system can optimize further. Part of the challenge has been to find clear objective functions that our system can optimize for, but SPAG has paved the way for this by leveraging language-based games, and we can follow in their footsteps.
 
--   [6] - [Making AI accessible with Andrej Karpathy and Stephanie Zhan](https://www.youtube.com/watch?v=c3b-JASoPi0&t=1618s)
 
 SPAG - Self Play in Adversarial language Games
 ----------------------------------------------
@@ -76,8 +75,6 @@ _Fig 4: Performance results of "Self-playing Adversarial Language Game Enhances 
 The SPAG authors compare the human-reasoning performance of a base model (LLAMA-2-7B / Baichuan-2-13B) against a model trained on the Alpaca dataset, a model trained on imitation learning of ChatGPT-generated data, and then also three iterations of self-play reinforcement-learning epochs. The model trained on reinforcement learning significantly improved its capabilities over any of the imitation-trained models.
 
 We believe that one can go much further with this paradigm, and want to explore the possibilities of adding additional adversarial games to the training set. That is the goal of this project -- to iterate upon a well-established base model and improve its general-purpose human-reasoning capabilities by teaching it iteratively with self-play in adversarial language games.
-
--   [7] "Self-playing Adversarial Language Game Enhances LLM Reasoning" - [arXiv:2404.10642](https://arxiv.org/abs/2404.10642) - Apr 16, 2024
 
 Choosing Good Adversarial Games
 -------------------------------
