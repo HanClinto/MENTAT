@@ -55,10 +55,10 @@ The attentive reader may ask: "What about RLHF? Isn't that Reinforcement Learnin
 Andrej [addresses this as well](https://www.youtube.com/watch?v=c3b-JASoPi0&t=1618s): @26:59 [6]
 
 > The other thing is that we're doing reinforcement learning from human feedback (RLHF), but that's like a super weak form of reinforcement learning. I think... what is the equivalent in AlphaGo for RLHF? What is the reward model? What I call it is a "vibe check". Imagine if you wanted to train an AlphaGo RLHF, it would be giving two people two boards and asking: "Which one do you prefer?" -- and then you would take those labels and you would train the model and then you would RL against that. What are the issues with that? It's like, number one -- that's just vibes of the board. That's what you're training against. Number two, if it's a reward model that's a neural net, then it's very easy to overfit to that reward model for the model you're optimizing over, and it's going to find all these spurious ways of hacking that massive model is the problem.
-
-AlphaGo gets around these problems because they have a very clear objective function, and you can RL against it.
-
-So RLHF is nowhere near [true] RL -- it's silly. And the other thing is that imitation is super-silly. RLHF is a nice improvement, but it's still silly, and I think people need to look for better ways of training these models so that it's in the loop with itself and its own psychology, and I think there will probably be unlocks in that direction.
+> 
+> AlphaGo gets around these problems because they have a very clear objective function, and you can RL against it.
+> 
+> So RLHF is nowhere near [true] RL -- it's silly. And the other thing is that imitation is super-silly. RLHF is a nice improvement, but it's still silly, and I think people need to look for better ways of training these models so that it's in the loop with itself and its own psychology, and I think there will probably be unlocks in that direction.
 
 In other words, there is a significant difference between RLHF and RL, and we should not confuse one for the other. As Andrej notes, part of the challenge has been to find clear objective functions that our system can optimize for, but SPAG has paved the way for this by leveraging language-based games, and we can follow in their footsteps.
 
