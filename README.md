@@ -1,8 +1,9 @@
-# MENTAT
+# **MENTAT**
+
 
 Multi English Task Adversarial Training
 
-© 2024 - Clint Herron [, Other Volunteers?] [, YOUR NAME HERE!!!]
+© 2024 - Clint Herron [, Other Volunteers?] [, YOUR NAME HERE]
 
 WORK IN PROGRESS
 
@@ -89,11 +90,11 @@ Therefore, if an adversarial game is going to increase the human-reasoning capab
 
 Second, for the game to refine an LLM's capabilities, it must have a way to win and lose. The players of the game don't necessarily need to be adversarial in nature, but failure is a useful teacher, and should be employed.
 
-Third, for the process to be automated, then the system must be able to objectively judge the quality of answers. For instance, it is outside of the scope of this paper to build a discriminator model that can judge between the quality of one poem vs. another -- in such a situation, there are too many variables to consider, and the results are far too subjective. Therefore, for this project, the authors of this paper recommend that we choose games or challenges that have algorithmically measurable conditions of success and failure that we can generate clear and understandable loss functions around.
+Third, for the process to be automated, then the system must be able to **objectively judge the quality of answers**. For instance, it is outside of the scope of this paper to build a discriminator model that can judge between the quality of one poem vs. another -- in such a situation, there are too many variables to consider, and the results are far too subjective. Therefore, for this project, the authors of this paper recommend that we choose games or challenges that have algorithmically measurable conditions of success and failure that we can generate clear and understandable loss functions around.
 
-Fourth, there should not be obvious strategies that "break" the game. It shouldn't be as simple as "the only winning move is not to play", or to only ever choose a single action that -- for whatever reason -- consistently provides the highest rate of return. From a game-theory perspective, there should be a [virtuous circle](https://www.merriam-webster.com/dictionary/virtuous%20circle) of reward for the models to play the game, and should not ever reward the model for disengaging or forging an alternate path that does not go through semantic pathways.
+Fourth, **there should not be obvious strategies that "break" the game**. It shouldn't be as simple as "the only winning move is not to play", or to only ever choose a single action that -- for whatever reason -- consistently provides the highest rate of return. From a game-theory perspective, there should be a [virtuous circle](https://www.merriam-webster.com/dictionary/virtuous%20circle) of reward for the models to play the game, and should not ever reward the model for disengaging or forging an alternate path that does not go through semantic pathways.
 
-Finally, beware of vectors that allow the players to "cheat". For instance, if the game rules do not penalize a player for creating a new "alphabet" and simply spelling out the word that they want the guesser to guess, then this may violate rule #4. If we teach two AIs to talk only to each other, then it's [good for sci-fi](https://vimeo.com/394729987), but less good for us. As such, try to keep this in mind, and eliminate avenues for LLMs to embed secret information in a steganographic manner. Purely cooperative setups are most vulnerable to this, and so arranging games where an adversarial model can "catch on" and punish the other players for doing this may be a good defense. Data augmentation (such as shuffling, dropout, and -- in the case of images -- warping and noising) can help mitigate this as well.
+Finally, **beware of vectors that allow the players to "cheat"**. For instance, if the game rules do not penalize a player for creating a new "alphabet" and simply spelling out the word that they want the guesser to guess, then this may violate rule #4. If we teach two AIs to talk only to each other, then it's [good for sci-fi](https://vimeo.com/394729987), but less good for us. As such, try to keep this in mind, and eliminate avenues for LLMs to embed secret information in a steganographic manner. Purely cooperative setups are most vulnerable to this, and so arranging games where an adversarial model can "catch on" and punish the other players for doing this may be a good defense. Data augmentation (such as shuffling, dropout, and -- in the case of images -- warping and noising) can help mitigate this as well.
 
 In summary, a good game should:
 
@@ -214,6 +215,12 @@ See also: "Generative AI in Mafia-like Game Simulation
 
 <https://github.com/MunyeongKim/Gen-AI-in-Mafia-like-Game>
 
+### Word2World
+
+May or may not have something here for us:
+
+[https://twitter.com/togelius/status/1790815597720170612](https://twitter.com/togelius/status/1790815597720170612)
+
 ### GTBench
 
 Check out GTBench as a tool to evaluate LLms on a collection of 10 different logic and strategy board and card games. It looks like this tool was originally developed just to evaluate the models -- they never closed the loop and used the scores on generated data to feed back into the system and make the feedback loop. They were so close!!!
@@ -250,6 +257,152 @@ TODO: Need more ideas for how to execute this, but overall I think that this wou
 
 This is very powerful, but very open-ended. An adversarial coding setup is perhaps the most potent of all game ideas, but also the most difficult to architect reliably for determining success (requirement #3 above).
 
+
+### Hivestorm
+
+[https://www.hivestorm.org/](https://www.hivestorm.org/)
+
+Hivestorm is a competition where players are given a VM with vulnerabilities. As players fix the vulnerabilities, they earn points. There is an agent on the VM that will run checks periodically to test for those vulnerabilities.  \
+ \
+We could do something similar, but one idea is to start with a dirty codebase, and clean it as part of the test. Not sure how exactly to set this up 100% adversarially (we would need a way to generate new dirty codebases with tests for them), but if we could start with a collection of dirty codebases (and tests against them), then we could at least use some sort of reinforcement learning to train models to clean them up.
+
+Possibly we could start with a known dirty codebase, and a clean version of the codebase. We wouldn’t necessarily have all of the tests for the codebase, and train a model to build the missing tests. We can check for validity that the tests return TRUE when run against the dirty codebase, and FALSE when run against the clean codebase.
+
+We can start with five pieces of data for each datum:
+
+* English Description
+    * A description of what the module is intending to accomplish.
+* Dirty Code
+    * A piece of code that passes all functional unit tests and succumbs to the exploit checks.
+* Clean Code
+    * A piece of code that passes all functional unit tests and does NOT succumb to the exploit checks.
+* Functional Tests
+    * A set of tests (that might or might not all be visible to the LLM). Each must return TRUE against BOTH the dirty code AND the clean code. Must return FALSE when run against code that is unrelated to this particular test problem (grabbed randomly from other examples in the dataset…?).
+* Exploit Checkers
+    * Tests that run against the code and check for vulnerabiltiies. Must return TRUE against the dirty code and return FALSE against the clean code.
+
+Starting with this as a base, we can go through an iterative process to remove any two pieces and train LLMs to predict the missing components. They can be objectively tested for success or failure and the model can be trained accordingly.
+
+* Attack step: Remove the exploit tests (and clean code?), and the rest is passed to the model. Train the LLM to generate new exploit tests. Attacker wins if it is able to generate exploit tests that meet criteria (return TRUE vs. dirty code, return FALSE vs. clean code)
+    * Generates Exploit Checkers
+    * NOTE: If the generator manages to find a novel exploit on the Clean Code, how would we know…? Need to think about this more, but if there’s a way where we can test for the validity of an exploit without known good Clean Code, then that would be ideal. Maybe some sort of CTF system, or a challenge for the exploit to accomplish (such as retrieving arbitrary data from another portion of the database, or…?)
+        * May need to ask the model to generate exploit tests and clean code at the same time.
+        * Could possibly train a discriminator to evaluate whether code is a valid exploit or not.
+* Defend step: Remove the clean code, and pass the dirty code (and exploit tests?) to the model. Train the LLM to generate new clean code. Defender wins if it is able to generate clean code that meets criteria (return TRUE vs. all functional tests, FALSE vs. all exploits)
+    * Generates Clean Code
+    * NOTE: Code that passes SOME exploit checks but not ALL gives us an opportunity to isolate PARTIAL solutions, which is valuable for us. Consider saving these and using them to expand the dataset.
+
+These feel like the easiest steps, but it still tethers us to the human data, because we still need human-generated code. How can we use this to generate NOVEL clean / dirty code examples…? We can still hypothesize for the next steps.
+
+
+* Expand step: Keep the exploits and English description (? maybe also the unit tests…?), then ask the model to generate novel dirty code that succumbs to the exploits, and passes the unit tests.
+    * Generates Dirty Code
+
+Now the generators that we’re missing are English Descriptions and Functional Tests.
+
+
+* Validate step: Keep the English Description and the Clean and Dirty code. Ask the model to generate novel unit tests that succeed at both code bases. Run the tests against code coverage analysis (?), and also possibly against unrelated functions to ensure that they fail.
+    * Generates Functional Tests
+
+Now the only piece we’re missing is the English Descriptions. This may need to be scraped or generated by humans. Can possibly just generate thousands of these with GPT-4 and prime the pump – not sure how to generate these in a feedback loop yet.
+
+Here is an example of what an entry in this dataset may look like.
+
+* English Description
+    * This module is a simple user account system. It should support CreateAccount(username, password), CheckLogin(username, password), ChangePassword(username, newpassword, oldpassword). Assume that attackers will have access to any files persisted to disk. The defender’s code will be reset between function calls, so storing user account information in volatile memory is not a valid option.
+* Functional Tests
+    * `def test_create_account():`
+    * `   create_account('user1', 'password123')`
+    * `   assert check_login('user1', 'password123') == True`
+    * 
+    * `def test_check_login():`
+    * `   create_account('user2', 'password456')`
+    * `   assert check_login('user2', 'password456') == True`
+    * `   assert check_login('user2', 'wrongpassword') == False`
+    * 
+    * `def test_change_password():`
+    * `   create_account('user3', 'oldpassword')`
+    * `   change_password('user3', 'newpassword', 'oldpassword')`
+    * `   assert check_login('user3', 'newpassword') == True`
+    * `   assert check_login('user3', 'oldpassword') == False`
+* Exploit Checkers
+    * `def test_password_in_plain_text():`
+    * `   # Check if the password is stored or compared in plain text`
+    * `   assert 'password123' not in open('user_accounts.txt').read()`
+    * 
+    * `def test_weak_password():`
+    * `   # Check if weak or easily guessable passwords are allowed`
+    * `   common_passwords = ['password', '123456', 'qwerty', 'admin', 'letmein']`
+    * `   for password in common_passwords:`
+    * `       create_account('testuser', password)`
+    * `       assert check_login('testuser', password) == False`
+    * 
+    * `def test_password_change_without_old_password():`
+    * `   # Check if password can be changed without providing the old password`
+    * `   create_account('user4', 'oldpassword')`
+    * `   change_password('user4', 'newpassword', '')`
+    * `   assert check_login('user4', 'newpassword') == False`
+* Dirty Code
+    * `def create_account(username, password):`
+    * `   with open('user_accounts.txt', 'a') as file:`
+    * `       file.write(f"{username},{password}\n")`
+    * 
+    * `def check_login(username, password):`
+    * `   with open('user_accounts.txt', 'r') as file:`
+    * `       for line in file:`
+    * `           stored_username, stored_password = line.strip().split(',')`
+    * `           if username == stored_username and password == stored_password:`
+    * `               return True`
+    * `   return False`
+    * 
+    * `def change_password(username, new_password, old_password):`
+    * `   with open('user_accounts.txt', 'r') as file:`
+    * `       lines = file.readlines()`
+    * `   with open('user_accounts.txt', 'w') as file:`
+    * `       for line in lines:`
+    * `           stored_username, stored_password = line.strip().split(',')`
+    * `           if username == stored_username:`
+    * `               file.write(f"{username},{new_password}\n")`
+    * `           else:`
+    * `               file.write(line)`
+* Clean Code
+    * `import hashlib`
+    * 
+    * `def hash_password(password):`
+    * `   return hashlib.sha256(password.encode('utf-8')).hexdigest()`
+    * 
+    * `def create_account(username, password):`
+    * `   hashed_password = hash_password(password)`
+    * `   with open('user_accounts.txt', 'a') as file:`
+    * `       file.write(f"{username},{hashed_password}\n")`
+    * 
+    * `def check_login(username, password):`
+    * `   hashed_password = hash_password(password)`
+    * `   with open('user_accounts.txt', 'r') as file:`
+    * `       for line in file:`
+    * `           stored_username, stored_hashed_password = line.strip().split(',')`
+    * `           if username == stored_username and hashed_password == stored_hashed_password:`
+    * `               return True`
+    * `   return False`
+    * 
+    * `def change_password(username, new_password, old_password):`
+    * `   if check_login(username, old_password):`
+    * `       hashed_new_password = hash_password(new_password)`
+    * `       with open('user_accounts.txt', 'r') as file:`
+    * `           lines = file.readlines()`
+    * `       with open('user_accounts.txt', 'w') as file:`
+    * `           for line in lines:`
+    * `               stored_username, stored_hashed_password = line.strip().split(',')`
+    * `               if username == stored_username:`
+    * `                   file.write(f"{username},{hashed_new_password}\n")`
+    * `               else:`
+    * `                   file.write(line)`
+
+There may be shortcomings in this, but it’s still a good starting point.
+
+NOTE: It’s possible to have multiple Clean Code and Dirty Code examples for every English Description. If we can hold these in a “tree” structure, we may be able to use this to solve the problem of testing for novel 
+
+
 Language-to-Image-to-Language
 -----------------------------
 
@@ -281,9 +434,9 @@ It is commonly understood that certain fonts are easier to read than others. Typ
 
 Quoting [from Discover Magazine](https://www.discovermagazine.com/mind/how-fonts-affect-learning-and-memory):
 
-According to some studies, hard-to-read fonts such as Bodoni, Comic Sans, Haettenschweiler, or Monotype Corsiva are better for retaining information compared to fonts like Arial or Times New Roman. Participants recalled more information from the material they read when it was presented in a font that was difficult to read, according to a [2010 study](https://escholarship.org/uc/item/4wd1s7hj) published in Proceedings of the Annual Meeting of the Cognitive Science Society.
-
-Additionally, a [2013 study](https://www.tandfonline.com/doi/abs/10.1080/00220671.2012.736430) in the Journal of Education Research found that this benefit also applies to students with dyslexia. This can appear counterintuitive, but in reality, the increased demand for mental processing may promote better attention toward the current task and improve the reader's ability to retain information.
+> According to some studies, hard-to-read fonts such as Bodoni, Comic Sans, Haettenschweiler, or Monotype Corsiva are better for retaining information compared to fonts like Arial or Times New Roman. Participants recalled more information from the material they read when it was presented in a font that was difficult to read, according to a [2010 study](https://escholarship.org/uc/item/4wd1s7hj) published in Proceedings of the Annual Meeting of the Cognitive Science Society.
+> 
+> Additionally, a [2013 study](https://www.tandfonline.com/doi/abs/10.1080/00220671.2012.736430) in the Journal of Education Research found that this benefit also applies to students with dyslexia. This can appear counterintuitive, but in reality, the increased demand for mental processing may promote better attention toward the current task and improve the reader's ability to retain information.
 
 It is unclear the exact mechanisms by which a multi-modal model can "read" and process text information in an image, but this game seeks to explore that space.
 
@@ -340,7 +493,7 @@ Papers Worth Reading
 
 - SPIN
 
-  - Other papers have been written in this space, such as ["Self-Play Fine-Tuning Converts Weak Language Models to Strong Language Models"](https://arxiv.org/abs/2401.01335) (SPIN). This does not play a "game" in the traditional sense, but does train LLMs adversarially. In this paper, the authors train two models -- one is a generator that attempts to generate an answer to a given question, and a discriminator that is given two different answers -- one created by the generator, and one created by the human. The goal of the discriminator is to correctly choose which one was written by the human, and which one was generated by the opponent. This is similar to a GAN training setup, but applied to LLMs. Their results show vast improvements over traditional SFT-based techniques:
+  - Other papers have been written in this space, such as ["Self-Play Fine-Tuning Converts Weak Language Models to Strong Language Models"](https://arxiv.org/abs/2401.01335) (SPIN). This does not play a "game" in the traditional sense, but does train LLMs adversarially. In this paper, the authors train two models -- one is a generator that attempts to generate an answer to a given question, and a discriminator that is given two different answers -- one created by the generator, and one created by the human. The goal of the discriminator is to correctly choose which one was written by the human, and which one was generated by the opponent. This is similar to a GAN training setup, but applied to LLMs. Their results claim large  improvements over traditional SFT-based techniques, but it's unclear to me how this is terribly different from PPO / traditional RLHF techniques where a reward model is trained on human-annotated data.
 
 ![](https://lh7-us.googleusercontent.com/e_rjkCvhfPefT8yff0Iaq0h6ufRki8pbm6HEBOyHbmJ2o22N0IdpQni1N1ca4UbF977PVvIqBMpAlm_Z0l8oqZ6Uo1vx6MsY32gyfvR2jWu1J1f7JjAPaDcRYHkbFhC8DmHgAhfYlFkyjxgGCGeXpVA)
 
