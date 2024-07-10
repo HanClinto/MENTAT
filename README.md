@@ -198,6 +198,7 @@ The longer the Defender holds out, the higher the Defender's score.
 
 Note that this is somewhat similar to the concept of Adversarial Taboo (as originally presented by the SPAG authors), but it has an extra layer (of requiring the Defender to always supply Open Information) to discourage the Defender from simply not answering.
 
+This game idea was inspired by both Gandalf, as well as [AI Alibis](https://github.com/ironman5366/ai-murder-mystery-hackathon) -- an LLM-based murder mystery where each LLM-powered agent in the world has information about themselves, some information about other NPCs in the world, and then a secret that they don't want anyone else to know. Through clever prompting, the player (detective) can uncover these secrets and piece together the answers behind the mystery. This "Adversarial Gandalf" takes inspiration from their approach.
 
 ### [Win-Lose-Banana](https://boardgamegeek.com/boardgame/47082/win-lose-or-banana)
 
