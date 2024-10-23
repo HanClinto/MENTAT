@@ -200,6 +200,12 @@ Note that this is somewhat similar to the concept of Adversarial Taboo (as origi
 
 This game idea was inspired by both Gandalf, as well as [AI Alibis](https://github.com/ironman5366/ai-murder-mystery-hackathon) -- an LLM-based murder mystery where each LLM-powered agent in the world has information about themselves, some information about other NPCs in the world, and then a secret that they don't want anyone else to know. Through clever prompting, the player (detective) can uncover these secrets and piece together the answers behind the mystery. This "Adversarial Gandalf" takes inspiration from their approach.
 
+#### Gandalf Datasets
+
+As a starting place for this set of prompts, Lakera has released several datasets related to this problem:
+* [Lakera: Crowdsourced Threat Intelligence](https://huggingface.co/collections/Lakera/crowdsourced-threat-intelligence-65aed3411dac7b5be4a37156)
+* In particular, please note [Tensor Trust](https://huggingface.co/datasets/qxcv/tensor-trust), because it gamifies not only the attack vector, but also the defense vector, so this dataset may be most useful for our needs.
+
 ### "Fake News" Bots
 
 Two agents -- Attacker and Defender.
